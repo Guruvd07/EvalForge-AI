@@ -1,0 +1,4 @@
+EVALUATION_PENDING = "pending"
+EVALUATION_RUNNING = "running"
+EVALUATION_COMPLETED = "completed"
+EVALUATION_FAILED = "failed"
