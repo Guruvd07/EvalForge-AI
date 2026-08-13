@@ -79,9 +79,8 @@ const ExperimentDetails = () => {
 // ---------------------------------------------------------------------------
 
 const {
-    data: evaluationRuns = [],
-    isLoading: evaluationRunsLoading,
-  } = useQuery({
+  data: evaluationRuns = [],
+} = useQuery({
     queryKey: ["evaluation-runs", experimentId],
     queryFn: () => getEvaluationRuns(experimentId!),
     enabled: Boolean(experimentId),
@@ -350,6 +349,7 @@ const modelComparison = Object.values(
           input_tokens: number;
           output_tokens: number;
           total_tokens: number;
+          cost: number;
         }
       >,
     ),
