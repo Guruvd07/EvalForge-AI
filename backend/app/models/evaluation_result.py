@@ -70,3 +70,35 @@ class EvaluationResult(Base):
         DateTime(timezone=True),
         default=datetime.utcnow
     )
+
+    relevance_score: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True
+    )
+
+    correctness_score: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True
+    )
+
+    coherence_score: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True
+    )
+
+    instruction_following_score: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True
+    )
+
+    overall_score: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True
+    )
+
+    def __repr__(self):
+        return (
+            f"<EvaluationResult("
+            f"{self.model_name}, "
+            f"{self.latency_ms}ms)>"
+        )

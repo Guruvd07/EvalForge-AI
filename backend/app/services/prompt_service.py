@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy.orm import Session
 
 from app.models.prompt import Prompt
@@ -15,7 +17,7 @@ class PromptService:
         current_user: User
     ) -> Prompt:
 
-        # Check experiment exists
+        # Check experiment exists and belongs to current user
         experiment = (
             db.query(Experiment)
             .filter(
@@ -39,3 +41,35 @@ class PromptService:
         db.refresh(prompt)
 
         return prompt
+
+    @staticmethod
+    def get_prompts_by_experiment(
+        db: Session,
+        experiment_id: str,
+        current_user: User
+    ) -> List[Prompt]:
+
+        # Check experiment exists and belongs to current user
+        experiment = (
+            db.query(Experiment)
+            .filter(
+                Experiment.id == experiment_id,
+                Experiment.user_id == current_user.id
+            )
+            .first()
+        )
+
+        if not experiment:
+            raise ValueError("Experiment not found")
+
+        # Get all prompts for this experiment
+        prompts = (
+            db.query(Prompt)
+            .filter(
+                Prompt.experiment_id == experiment_id
+            )
+            .order_by(Prompt.created_at.desc())
+            .all()
+        )
+
+        return prompts

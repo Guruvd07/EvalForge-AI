@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from app.database.dependencies import get_db
 from app.schemas.user import UserRegister, UserResponse
 from app.services.auth_service import AuthService
@@ -45,6 +45,37 @@ def login(
             db,
             user_data.email,
             user_data.password
+        )
+
+        token = create_access_token(
+            {
+                "sub": user.id,
+                "email": user.email,
+                "role": user.role
+            }
+        )
+
+        return {
+            "access_token": token,
+            "token_type": "bearer"
+        }
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
+        
+@router.post("/token")
+def login_for_swagger(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    try:
+        user = AuthService.login_user(
+            db,
+            form_data.username,
+            form_data.password
         )
 
         token = create_access_token(

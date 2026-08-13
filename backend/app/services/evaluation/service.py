@@ -26,14 +26,14 @@ class EvaluationService:
         )
 
         results = await EvaluationRunner.run(
-            prompts,
-            selected_models,
+            prompts=prompts,
+            selected_models=selected_models,
         )
 
         EvaluationRepository.save_results(
-            db,
-            evaluation_run_id,
-            results,
+            db=db,
+            evaluation_run_id=evaluation_run_id,
+            results=results,
         )
 
         return results

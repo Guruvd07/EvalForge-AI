@@ -26,6 +26,14 @@ class EvaluationRepository:
                     output_tokens=result["output_tokens"],
                     total_tokens=result["total_tokens"],
                     cost=result["cost"],
+
+                    relevance_score=result.get("relevance_score"),
+                    correctness_score=result.get("correctness_score"),
+                    coherence_score=result.get("coherence_score"),
+                    instruction_following_score=result.get(
+                        "instruction_following_score"
+                    ),
+                    overall_score=result.get("overall_score"),
                 )
             )
 

@@ -1,6 +1,3 @@
-import time
-from sqlalchemy.orm import Session
-
 from app.core.model_registry import SUPPORTED_MODELS
 from app.services.factory.provider_factory import ProviderFactory
 
@@ -10,7 +7,7 @@ class EvaluationEngine:
     @staticmethod
     async def evaluate_prompt(
         prompt: str,
-        model_key: str
+        model_key: str,
     ):
 
         model = SUPPORTED_MODELS[model_key]
@@ -19,20 +16,22 @@ class EvaluationEngine:
             model["provider"]
         )
 
-        start = time.perf_counter()
-
-        response = await provider.generate(
+        result = await provider.generate(
             prompt=prompt,
-            model=model["model_id"]
+            model=model["model_id"],
         )
+        
+        print("DEBUG RESULT:", result)
 
-        latency = (
-            time.perf_counter() - start
-        ) * 1000
+        print(result)   # Temporary debug
 
         return {
-            "response": response,
-            "latency_ms": round(latency),
+            "response": result["response_text"],
+            "latency_ms": result["latency_ms"],
+            "input_tokens": result["input_tokens"],
+            "output_tokens": result["output_tokens"],
+            "total_tokens": result["total_tokens"],
+            "cost": result["cost"],
             "provider": model["provider"],
-            "model_name": model["display_name"]
+            "model_name": model["display_name"],
         }

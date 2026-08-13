@@ -10,14 +10,14 @@ SUPPORTED_MODELS = {
     "deepseek-r1": {
         "display_name": "DeepSeek R1",
         "provider": "openrouter",
-        "model_id": "deepseek/deepseek-r1",
+        "model_id": "deepseek/deepseek-r1-0528",
         "free": True
     },
 
     "qwen3": {
-        "display_name": "Qwen 3",
+        "display_name": "Qwen 2.5 7B",
         "provider": "openrouter",
-        "model_id": "qwen/qwen3",
+        "model_id": "qwen/qwen-2.5-7b-instruct",
         "free": True
     },
 

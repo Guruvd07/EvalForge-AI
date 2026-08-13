@@ -6,6 +6,12 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+# Import all models so Alembic can discover them
+from app.models.user import User
+from app.models.experiment import Experiment
+from app.models.prompt import Prompt
+from app.models.evaluation_run import EvaluationRun
+from app.models.evaluation_result import EvaluationResult
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # this is the Alembic Config object, which provides
