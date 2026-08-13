@@ -25,10 +25,18 @@ class OpenRouterProvider(BaseLLMProvider):
             response = await self.client.chat.completions.create(
                 model=model,
                 messages=[
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    }
                 ],
                 max_tokens=512,
                 temperature=0,
+                extra_body={
+                    "usage": {
+                        "include": True,
+                    }
+                },
             )
 
         except Exception as exc:
@@ -50,7 +58,6 @@ class OpenRouterProvider(BaseLLMProvider):
         choices = getattr(response, "choices", None)
 
         if not choices:
-            # Try to extract useful information from the response.
             response_dump = repr(response)
 
             raise RuntimeError(
@@ -71,17 +78,14 @@ class OpenRouterProvider(BaseLLMProvider):
         content = getattr(message, "content", None)
 
         # ---------------------------------------------------------
-        # Some models/providers can return a response where content
-        # is None. Never allow this to become a TypeError later.
+        # Handle empty content
         # ---------------------------------------------------------
 
         if content is None:
-            # Some responses may contain tool calls or other fields.
             tool_calls = getattr(message, "tool_calls", None)
 
             if tool_calls:
                 content = ""
-
             else:
                 raise RuntimeError(
                     f"OpenRouter returned an empty message content "
@@ -120,6 +124,19 @@ class OpenRouterProvider(BaseLLMProvider):
         )
 
         # ---------------------------------------------------------
+        # Cost
+        # ---------------------------------------------------------
+
+        cost = (
+            getattr(usage, "cost", 0.0)
+            if usage
+            else 0.0
+        )
+
+        if cost is None:
+            cost = 0.0
+
+        # ---------------------------------------------------------
         # Return normalized provider response
         # ---------------------------------------------------------
 
@@ -129,5 +146,5 @@ class OpenRouterProvider(BaseLLMProvider):
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
             "total_tokens": total_tokens,
-            "cost": 0.0,
+            "cost": float(cost),
         }
